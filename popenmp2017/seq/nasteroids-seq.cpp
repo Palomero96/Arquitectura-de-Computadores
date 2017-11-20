@@ -2,6 +2,7 @@
 #include <iostream>
 #include <regex>
 #include <cmath>
+#include <random>
 
 /* Constantes */
 const double gravity = 0.00006674; 
@@ -14,6 +15,7 @@ const int m = 1000;			//Media para el calculo de distribucion normal de las masa
 const int sdm = 50; 		//Desviacion estandar para el calculo de la dist normal de las masas 	**No estoy seguro del tipo, confirmen
 
 using namespace std;
+
 /* Funciones */
 bool checkArgs ( int argc, char *argv[]) {
 	regex e("\\d+");
@@ -61,13 +63,21 @@ bool checkArgs ( int argc, char *argv[]) {
 	return check;
 }
 /* Main */
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]){
+	
+	
 	/* Llamamos a funcion para que compruebe argumentos */
 	if (!checkArgs(argc, argv)) {
 		return -1; 
 	}
 	/* Declaracion de variables*/
+	int seed = stoi(argv[5]);
 	
+	/* Código previo necesario para la obtención de las posiciones iniciales de los asteroides */
+	default_random_engine re{seed};
+	uniform_real_distribution<double> xdist{0.0, std::nextafter(width, std :: numeric_limits<double>::max())};
+	uniform_real_distribution<double> ydist{0.0, std::nextafter(height, std :: numeric_limits<double>::max())};
+	normal_distribution<double> mdist{m, sdm};
+
 	return 0;
 }

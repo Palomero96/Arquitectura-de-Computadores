@@ -1,4 +1,4 @@
-/* Librerías */
+/* Librerias */
 #include <iostream>
 #include <regex>
 using namespace std;
@@ -18,12 +18,14 @@ bool checkArgs ( int argc, char *argv[]) {
 		if(!regex_match(argv[3], r)) {
 			check= false;
 		}
-		if(!regex_match(argv[5], r)) {
+		if(regex_match(argv[5], r)) {
 			int seed = stoi(argv[5]);
 			if(seed == 0){
 				check = false;
 			}
-		}		
+		} else {
+			check = false;
+		}
 	}
 
 	if(!check) {

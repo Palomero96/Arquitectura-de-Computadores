@@ -1,10 +1,14 @@
 /* Librerías */
 #include <iostream>
 #include <regex>
+#include <fstream>
+#include <iomanip>
+#include <random>
 using namespace std;
 /* Funciones */
-bool checkArgs ( int argc, char *argv[]) {
+/*bool checkArgs ( int argc, char *argv[]) {
 	regex r("\\d+");
+	regex f("[+-]?([0-9]*[.])?[0-9]+");
 	bool check = true;
 	if(argc != 6) {
 		check = false;
@@ -18,23 +22,56 @@ bool checkArgs ( int argc, char *argv[]) {
 		if(!regex_match(argv[3], r)) {
 			check= false;
 		}
-		if(!regex_match(argv[5], r)) {
+
+		if(regex_match(argv[5], r)) {
 			int seed = stoi(argv[5]);
 			if(seed == 0){
 				check = false;
 			}
+		}else {
+			check = false;
 		}		
 	}
-
+	
 	if(!check) {
-		cerr << "Wrogn arguments.\nCorrect use:\nnasteroids-seq num_asteroides num_iteraciones num_planetas pos_rayo semilla\n";
+		cerr << "Wrong arguments.\nCorrect use:\nnasteroids-seq num_asteroides num_iteraciones num_planetas pos_rayo semilla\n";
 	}
 
 	return check;
-}
+}*/
 /* Main */
-int main(int argc, char *argv[])
-{
-	cout << checkArgs(argc, argv);
+int main(){
+/*		if(argc != 6) {
+		return -1;
+	}
+	//Definimos las variables
+	int num_asteroides = stoi(argv[1]);
+	int num_iteraciones = stoi(argv[2]);
+	int num_planetas = stoi(argv[3]);
+	double pos_rayo = stod(argv[4]);
+	int semilla = stoi(argv[5]);
+	//Calculamos los parametros iniciales
+	//Creamos el archivo donde escribiremos los parametros de entrada y las 
+	ofstream out("init_conf.txt");
+	out << fixed << setprecision(3) << num_asteroides <<" "<<num_iteraciones<<" "<<num_planetas<<" "<< pos_rayo<< " " <<semilla<< endl;
+*/	
+	double mass = 1000.0;
+    double sdm = 50.0;
+    double width = 200.0;
+    double height = 200.0;
+    int semilla = 2000;
+    default_random_engine re{semilla};
+    uniform_real_distribution <double> xdist{0.0, nextafter(width, numeric_limits<double>::max())};
+    uniform_real_distribution <double> ydist{0.0, nextafter(height, numeric_limits<double>::max())};
+    normal_distribution <double> mdist{mass, sdm};
+ 
+	cout << mdist(re);
+	cout << "\n"; 
+	cout << mdist(re);
+	cout << "\n"; 
+	cout << mdist(re);
+
+	
 	return 0;
+	
 }

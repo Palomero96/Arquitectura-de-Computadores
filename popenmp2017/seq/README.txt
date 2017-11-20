@@ -1,0 +1,1 @@
+Consideramos que el rayo, al tener una anchura de 4 unidades, no puede situarse a menos de 2 unidades de uno de los bordes.

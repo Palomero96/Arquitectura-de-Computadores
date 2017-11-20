@@ -32,19 +32,19 @@ bool checkArgs (int argc, char *argv[]) {
 	} else {
 		/* Comprobacion de numero de asteroides */
 		if(!regex_match(argv[1], e)) {
-			check= false;
+			check = false;
 		}
 		/* Comprobacion de numero de iteraciones*/
 		if(!regex_match(argv[2], e)) {
-			check= false;
+			check = false;
 		}
 		/* Comprobacion de numero de planetas */
 		if(!regex_match(argv[3], e)) {
-			check= false;
+			check = false;
 		}
 		/* Comprobacion de posicion del rayo */
 		if(!regex_match(argv[4], f)) {
-			check= false;
+			check = false;
 		} else {
 			double ray = stod(argv[4]);
 			if (ray > 199 || ray < 1) {
@@ -85,8 +85,9 @@ void createAsts (int num_asteroides, int semilla, forward_list<asteroide> &aster
 }
 
 /* Main */
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]){
+	
+	
 	/* Llamamos a funcion para que compruebe argumentos */
 	if (!checkArgs(argc, argv)) {
 		return -1; 

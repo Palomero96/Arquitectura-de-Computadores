@@ -3,7 +3,7 @@
 #include <regex>
 #include <cmath>
 #include <random>
-#include <forward_list>
+#include <vector>
 #include <fstream>
 #include <iomanip>
 using namespace std;
@@ -76,7 +76,7 @@ bool checkArgs (int argc, char *argv[]) {
 	return check;
 }
 /* Metodo de creacion de asteroides */
-void createAstros (int num_asteroides, int num_planetas, unsigned int semilla, forward_list<asteroide> &asteroides, planeta *planetas){
+void createAstros (int num_asteroides, int num_planetas, unsigned int semilla, vector<asteroide> &asteroides, planeta *planetas){
 	/* Constantes y variables */
 	double mass = 1000.0;
 	double sdm = 50.0;
@@ -103,7 +103,7 @@ void createAstros (int num_asteroides, int num_planetas, unsigned int semilla, f
 		aaux.pvx = 0.0;
 		aaux.pvy = 0.0;
 		/* Añadimos el asteroide a la lista */
-		asteroides.push_front(aaux);
+		asteroides.push_back(aaux);
 	}
 	/* Creacion de planetas*/
 	for(i = 0; i < num_planetas ; i++){
@@ -153,7 +153,7 @@ int main(int argc, char *argv[]){
     double pos_rayo = stod(argv[4]);
     unsigned int semilla = stoi(argv[5]);
     /* Creamos lista para los asteroides */
-    forward_list<asteroide> asteroides;
+    vector<asteroide> asteroides;
     /* Creamos array para planetas */
 	planeta *planetas = new planeta[num_planetas];
 	/* Llamamos a la funcion para crear los astros */
@@ -161,11 +161,9 @@ int main(int argc, char *argv[]){
     ofstream init("init_conf.txt");
     /* Imprimimos los datos iniciales en el fichero */
     init << num_asteroides << " " << num_iteraciones << " " << num_planetas << " " << pos_rayo << " " << semilla << endl;
-    /* Damos la vuelta a la lista */
-    asteroides.reverse();
     /* Imprimimos los asteroides en el fichero */
-    for (auto itri = asteroides.begin(); itri != asteroides.end(); ++itri ){
-    	init << fixed << setprecision(3) <<  itri->x << " " << itri->y << " " << itri->mass << endl;
+    for (unsigned i = 0 ; i < asteroides.size() ; i++){
+    	init << fixed << setprecision(3) <<  asteroides[i].x << " " << asteroides[i].y << " " << asteroides[i].mass << endl;
     }
     /* Imprimimos los planetas en el fichero */
     for (int i = 0; i<num_planetas;i++) {

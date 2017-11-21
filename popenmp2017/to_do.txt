@@ -1,6 +1,6 @@
 comprobar parametros --> hecho
-generar datos iniciales
-imprimir datos iniciales en fichero
+generar datos iniciales --> hecho
+imprimir datos iniciales en fichero --> hecho
 iteraciones
 imprimir asteroides restantes
 liberar recursos

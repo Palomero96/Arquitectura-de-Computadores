@@ -3,13 +3,14 @@
 #include <regex>
 #include <cmath>
 #include <random>
+#include <forward_list>
 
 /* Constantes */
 const double gravity = 0.00006674; 
 const double t = 0.1; 		//Intervalo de tiempo
 const double dmin = 2.0; 	//Distancia minima
-//const double width = 200; 	//Anchura del espacio			**No estoy seguro del tipo, confirmen
-//const double height = 200;	//Altura del espacio 			**No estoy seguro del tipo, confirmen
+//const double width = 200.0; 	//Anchura del espacio
+//const double height = 200.0;	//Altura del espacio
 const int ray_width = 4;	//Anchura del rayo				**No estoy seguro del tipo, confirmen
 //const int m = 1000;			//Media para el calculo de distribucion normal de las masas				
 //const int sdm = 50; 		//Desviacion estandar para el calculo de la dist normal de las masas 	
@@ -98,17 +99,17 @@ int main(int argc, char *argv[]){
     //int num_iteraciones = stoi(argv[2]);
     int num_planetas = stoi(argv[3]);
     //double pos_rayo = stod(argv[4]);
-	int seed = stoi(argv[5]);
+	unsigned int seed = stoi(argv[5]);
 	    
 	/* Codigo previo necesario para la obtencion de las posiciones iniciales de los asteroides */
 	default_random_engine re{seed};
-	uniform_real_distribution<double> xdist{0.0, std::nextafter(200, std :: numeric_limits<double>::max())};
-	uniform_real_distribution<double> ydist{0.0, std::nextafter(200, std :: numeric_limits<double>::max())};
-	normal_distribution<double> mdist{1000, 50}; //Media y desv estandar para el calculo de distrib normal de masas. Lo ponemos directamente para evitar la creacin de más variables
+	uniform_real_distribution<double> xdist{0.0, std::nextafter(200.0, std :: numeric_limits<double>::max())};
+	uniform_real_distribution<double> ydist{0.0, std::nextafter(200.0, std :: numeric_limits<double>::max())};
+	normal_distribution<double> mdist{1000.0, 50.0}; //Media y desv estandar para el calculo de distrib normal de masas. Lo ponemos directamente para evitar la creacin de más variables
 
 	/* Creacion Asteroides */
-	Asteroide asteroides[num_asteroides-1]; //Creamos un array con los asteroides
-	for(int i = 1; i < num_asteroides; i++){
+    forward_list<Asteroide> asteroides; //Creamos un array con los asteroides
+	for(int i = 0; i < num_asteroides; i++){
 		cerr << "Asteroide " << i << ": \n";
 		asteroides[i].x = xdist(re); //Asignamos a cada asteroide un valor aleatorio de la posicion de x
 		asteroides[i].y = ydist(re); //Lo mismo con la y
@@ -154,8 +155,8 @@ int main(int argc, char *argv[]){
 			break;
 		}
 	}
-
-	for(int i = 1; i < num_planetas; i++){
+	//Se borra posteriormente, solo para ver si se crean correctamente
+	for(int i = 0; i < num_planetas; i++){
 		cerr << "Planeta " << i << ": \n";
 		cerr << planetas[i].x << " " << planetas[i].y << " " << planetas[i].mass << "\n";	
 	}

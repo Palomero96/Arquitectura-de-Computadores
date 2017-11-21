@@ -4,6 +4,7 @@
 #include <fstream>
 #include <iomanip>
 #include <random>
+#include <forward_list>
 using namespace std;
 /* Funciones */
 /*bool checkArgs ( int argc, char *argv[]) {
@@ -39,6 +40,12 @@ using namespace std;
 
 	return check;
 }*/
+struct planeta {
+	int id;
+	double x;
+    double y;
+    double mass;
+};
 /* Main */
 int main(){
 /*		if(argc != 6) {
@@ -51,10 +58,13 @@ int main(){
 	double pos_rayo = stod(argv[4]);
 	int semilla = stoi(argv[5]);
 	//Calculamos los parametros iniciales
+	
+	
 	//Creamos el archivo donde escribiremos los parametros de entrada y las 
 	ofstream out("init_conf.txt");
 	out << fixed << setprecision(3) << num_asteroides <<" "<<num_iteraciones<<" "<<num_planetas<<" "<< pos_rayo<< " " <<semilla<< endl;
-*/	
+*/
+	
 	double mass = 1000.0;
     double sdm = 50.0;
     double width = 200.0;
@@ -64,13 +74,49 @@ int main(){
     uniform_real_distribution <double> xdist{0.0, nextafter(width, numeric_limits<double>::max())};
     uniform_real_distribution <double> ydist{0.0, nextafter(height, numeric_limits<double>::max())};
     normal_distribution <double> mdist{mass, sdm};
- 
-	cout << mdist(re);
-	cout << "\n"; 
-	cout << mdist(re);
-	cout << "\n"; 
-	cout << mdist(re);
+   	vector <planeta> planetas;
+    
+		for(int i=0; i<2; i++){
+		
+		planeta nombre;
+		nombre.id=i;
+		nombre.x=xdist(re);
+		nombre.y=ydist(re);
+		nombre.mass=mdist(re); 
+		planetas.push_back(nombre);
 
+		}
+		
+		for (unsigned i=0; i<planetas.size();i++){
+	
+	cout << planetas[i].id;
+	cout << "\n"; 
+	cout << planetas[i].x;
+	cout << "\n"; 
+	cout << planetas[i].y;
+	cout << "\n"; 
+	cout << planetas[i].mass;
+	cout << "\n"; 
+			
+		}
+			
+		
+		for (unsigned i=0; i<planetas.size();i++){
+	if(i==0){
+		planetas.erase(planetas.begin()+i);
+		
+	}
+			cout << planetas[i].id;
+	cout << "\n"; 
+	cout << planetas[i].x;
+	cout << "\n"; 
+	cout << planetas[i].y;
+	cout << "\n"; 
+	cout << planetas[i].mass;
+	cout << "\n"; 
+			
+		}
+		
 	
 	return 0;
 	

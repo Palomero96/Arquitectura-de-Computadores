@@ -18,17 +18,26 @@ const int ray_width = 4;	//Anchura del rayo				**No estoy seguro del tipo, confi
 using namespace std;
 
 /* Estructuras de datos */
-struct Asteroide {
-	double x;
-	double y;
-	double mass;
-	double vx;
-	double vy;
-	double px;
-	double py;
-	double pvx;
-	double pvy;
+class Asteroide {
+		double x;
+		double y;
+		double mass;
+		double vx;
+		double vy;
+		double px;
+		double py;
+		double pvx;
+		double pvy;
+	public:
+		void set_values(double, double, double);
 };
+void Asteroide::set_values(double a, double b, double m){
+	x = a;
+	y = b;
+	mass = m;
+}
+
+
 
 struct Planeta {
 	double x;
@@ -109,12 +118,12 @@ int main(int argc, char *argv[]){
 
 	/* Creacion Asteroides */
     forward_list<Asteroide> asteroides; //Creamos un array con los asteroides
-	for(int i = 0; i < num_asteroides; i++){
+	for(int i = 1; i <= num_asteroides; i++){
 		cerr << "Asteroide " << i << ": \n";
-		asteroides[i].x = xdist(re); //Asignamos a cada asteroide un valor aleatorio de la posicion de x
-		asteroides[i].y = ydist(re); //Lo mismo con la y
-		asteroides[i].mass = mdist(re); //Lo mismo con la masa
-		cerr << asteroides[i].x << " " << asteroides[i].y << " " << asteroides[i].mass << "\n";	
+		Asteroide ast;
+		ast.set_values(xdist(re), ydist(re), mdist(re));
+		asteroides.emplace_front(ast);
+		//cerr << asteroides[i].x << " " << asteroides[i].y << " " << asteroides[i].mass << "\n";	
 	}
 	
 	/*Creacion Planetas*/
@@ -156,7 +165,7 @@ int main(int argc, char *argv[]){
 		}
 	}
 	//Se borra posteriormente, solo para ver si se crean correctamente
-	for(int i = 0; i < num_planetas; i++){
+	for(int i = 1; i <= num_planetas; i++){
 		cerr << "Planeta " << i << ": \n";
 		cerr << planetas[i].x << " " << planetas[i].y << " " << planetas[i].mass << "\n";	
 	}

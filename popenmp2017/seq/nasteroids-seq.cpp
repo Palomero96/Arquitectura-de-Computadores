@@ -106,17 +106,28 @@ int main(){
 		planetas.erase(planetas.begin()+i);
 		
 	}
-			cout << planetas[i].id;
+	cout << planetas[i].id;
 	cout << "\n"; 
 	cout << planetas[i].x;
 	cout << "\n"; 
 	cout << planetas[i].y;
 	cout << "\n"; 
 	cout << planetas[i].mass;
-	cout << "\n"; 
-			
+	cout << "\n"; 		
 		}
+	cout << planetas.size();
+		cout << "\n";
 		
+
+	double pendiente = 2.50;
+	cout << pendiente << "hola crack";
+		cout << "\n";
+	cout <<atan(pendiente)<< endl;
+	pendiente= pendiente - trunc(pendiente);
+	cout << atan(pendiente);
+		cout << "\n";
+	double g = 6.674 *exp(-5);
+	cout << fixed << setprecision(11) << g;
 	
 	return 0;
 	

@@ -15,6 +15,7 @@ struct asteroide {
 	double mass;
 	double vx;
 	double vy;
+	/* Creamos variables para que guarden el estado anterior del asteriode */
 	double px;
 	double py;
 	double pvx;
@@ -93,13 +94,13 @@ void createAstros (int num_asteroides, int num_planetas, unsigned int semilla, v
 		/* Creamos el asteroide y rellenamos sus campos */
 		asteroide aaux;
 		aaux.id = i;
-		aaux.x = xdist(re);
-		aaux.y = ydist(re);
+		aaux.px = xdist(re);
+		aaux.py = ydist(re);
 		aaux.mass = mdist(re);
 		aaux.vx = 0.0;
 		aaux.vy = 0.0;
-		aaux.px = 0.0;
-		aaux.py = 0.0;
+		aaux.x = 0.0;
+		aaux.y = 0.0;
 		aaux.pvx = 0.0;
 		aaux.pvy = 0.0;
 		/* Añadimos el asteroide a la lista */
@@ -142,22 +143,23 @@ void calcAsts (vector<asteroide> asteroides, int actast, double &fuerzax, double
 	double pendiente = 0.0;
 	double alfa = 0.0;
 	double fuerza = 0.0;
-	double g = 6.674 * exp(-5);
+	double g = 0.044969058;
 	/* Para cada asteroide del espacio */
-	for(int i = 0 ; i < asteroides.size() ; i++) {
+	for(unsigned i = 0 ; i < asteroides.size() ; i++) {
 		/* Si es el mismo asteroide, no se calcula la fuerza que ejerce sobre si mismo */
-		if (i == actast) {
+		int actasta = (int) i;
+		if (actast == actasta) {
 			continue;
 		}
 		/* Calculamos la distancia entre los elementos */
-		distancia = sqrt(pow((asteroides[actcast].x - asteroides[i].x),2)+pow((asteroides[actast].y - asteroides[i].y),2));
+		distancia = sqrt(pow((asteroides[actast].px - asteroides[i].px),2)+pow((asteroides[actast].py - asteroides[i].py),2));
 		/* Si la distancia es menor o igual a dos, no se calcula fuerza de atraccion */
 		if (distancia <= 2.00) {
 			continue;
 		}
 		/* Calculamos la pendiente */
-		pendiente = (asteroides[actast].y - asteroide[i].y)/(asteroides[actast].x - asteroides[i].x);
-		if(asteroides[actast].x != asteroides[i].x) {
+		pendiente = (asteroides[actast].py - asteroides[i].py)/(asteroides[actast].px - asteroides[i].px);
+		if(asteroides[actast].px != asteroides[i].px) {
 			if(pendiente < -1  || pendiente > 1){
 				pendiente = pendiente - trunc(pendiente);
 			}
@@ -165,7 +167,11 @@ void calcAsts (vector<asteroide> asteroides, int actast, double &fuerzax, double
 		/* Calculamos el angulo */
 		alfa = atan(pendiente);
 		/* Calculo de la fuerza */
-		fuerza = g*asteroides[astact].mass*asteroides[i].mass/pow(distancia,2);
+		fuerza = g*asteroides[actast].mass*asteroides[i].mass/pow(distancia,2);
+		/* Comprobamos que la fuerza no sea superior a la permitida */
+		if(fuerza > 200.0){
+			fuerza = 200.0;
+		}
 		/* Calculamos las componentes de la fuerza y las añadimos al sumatorio de fuerzas */
 		fuerzax = fuerzax + fuerza*sin(alfa);
 		fuerzay = fuerzay + fuerza*cos(alfa);
@@ -178,14 +184,14 @@ void calcPlas (planeta *planetas, vector<asteroide> asteroides, int actast, doub
 	double pendiente = 0.0;
 	double alfa = 0.0;
 	double fuerza = 0.0;
-	double g = 6.674 * exp(-5);
+	double g = 0.044969058;
 	/* Para cada planeta del espacio */
-	for(int i = 0 ; i < asteroides.size() ; i++) {
+	for(unsigned i = 0 ; i < asteroides.size() ; i++) {
 		/* Calculamos la distancia entre los elementos */
-		distancia = sqrt(pow((asteroides[actcast].x - planetas[i].x),2)+pow((asteroides[actast].y - planetas[i].y),2));
+		distancia = sqrt(pow((asteroides[actast].px - planetas[i].x),2)+pow((asteroides[actast].py - planetas[i].y),2));
 		/* Calculamos la pendiente */
-		pendiente = (asteroides[actast].y - planetas[i].y)/(asteroides[actast].x - planetas[i].x);
-		if(asteroides[actast].x != planetas[i].x) {
+		pendiente = (asteroides[actast].py - planetas[i].y)/(asteroides[actast].px - planetas[i].x);
+		if(asteroides[actast].px != planetas[i].x) {
 			if(pendiente < -1  || pendiente > 1){
 				pendiente = pendiente - trunc(pendiente);
 			}
@@ -193,7 +199,11 @@ void calcPlas (planeta *planetas, vector<asteroide> asteroides, int actast, doub
 		/* Calculamos el angulo */
 		alfa = atan(pendiente);
 		/* Calculo de la fuerza */
-		fuerza = g*asteroides[astact].mass*planetas[i].mass/pow(distancia,2);
+		fuerza = g*asteroides[actast].mass*planetas[i].mass/pow(distancia,2);
+		/* Comprobamos que la fuerza no sea superior a la permitida */
+		if(fuerza > 200.0){
+			fuerza = 200.0;
+		}
 		/* Calculamos las componentes de la fuerza y las añadimos al sumatorio de fuerzas */
 		fuerzax = fuerzax + fuerza*sin(alfa);
 		fuerzay = fuerzay + fuerza*cos(alfa);
@@ -228,15 +238,72 @@ int main(int argc, char *argv[]){
     init << num_asteroides << " " << num_iteraciones << " " << num_planetas << " " << pos_rayo << " " << semilla << endl;
     /* Imprimimos los asteroides en el fichero */
     for (unsigned i = 0 ; i < asteroides.size() ; i++){
-    	init << fixed << setprecision(3) <<  asteroides[i].x << " " << asteroides[i].y << " " << asteroides[i].mass << endl;
+    	init << fixed << setprecision(3) <<  asteroides[i].px << " " << asteroides[i].py << " " << asteroides[i].mass << endl;
     }
     /* Imprimimos los planetas en el fichero */
     for (int i = 0; i<num_planetas ; i++) {
     	init << fixed << setprecision(3) << planetas[i].x << " " << planetas[i].y << " " << planetas[i].mass << " " << endl;
 	}
-	/* Imprimimos el rayo */
+	/* Imprimimos el rayo en el fichero */
 	init << fixed << setprecision(3) << 0.000 << " " << pos_rayo << endl;
-	/* Calculamos las fuerzas que afectan a los asteroides */
+	/* Realizamos las iteraciones */
+	for(int a = 0 ; a < num_iteraciones ; a++) {
+		/* Comprobamos que no se hayan destruido todos los asteroides */
+		if (asteroides.size() == 0) {
+			break;
+		}
+		/* Calculamos el resultado de la iteracion */
+		for(unsigned i = 0; i < asteroides.size() ; i++){
+			fuerzax = 0.0;
+			fuerzay = 0.0;
+			/* Llamamos a los metodos que calculan fuerzas */
+			calcAsts(asteroides, i, fuerzax, fuerzay);
+			calcPlas(planetas, asteroides, i, fuerzax, fuerzay);
+			/* Guardamos los datos actuales del asteroide */
+			asteroides[i].vx = asteroides[i].pvx + (fuerzax/asteroides[i].mass) * 0.1;
+			asteroides[i].vy = asteroides[i].pvy + (fuerzay/asteroides[i].mass) * 0.1;
+			asteroides[i].x = asteroides[i].px + asteroides[i].vx * 0.1;
+			asteroides[i].y = asteroides[i].py + asteroides[i].vy * 0.1;
+			/* Comprobamos el efecto rebote */
+			if(asteroides[i].x <= 0.0){
+				asteroides[i].x = 2.0;
+				asteroides[i].vx = asteroides[i].vx * -1;
+			}
+			if(asteroides[i].y <= 0.0){
+				asteroides[i].y = 2.0;
+				asteroides[i].vy = asteroides[i].vy * -1;
+			}
+			if(asteroides[i].x >= 200.0){
+				asteroides[i].x = 198.0;
+				asteroides[i].vx = asteroides[i].vx * -1;
+			}
+			if(asteroides[i].y >= 200.0){
+				asteroides[i].y = 198.0;
+				asteroides[i].vy = asteroides[i].vy * -1;
+			}
+			
+		}
+		/* Calculamos si el rayo aniquila asteroides */	
+		for(unsigned i = 0; i < asteroides.size() ; i++){
+			if(asteroides[i].y <= (pos_rayo + 2) && asteroides[i].y >= (pos_rayo - 2)){
+				asteroides.erase(asteroides.begin()+i);
+				i--;
+			}
+		}
+		/* Guardamos los datos como anteriores en los asteroides */	
+		for(unsigned i = 0; i < asteroides.size() ; i++){
+			asteroides[i].px = asteroides[i].x;
+			asteroides[i].py = asteroides[i].y;
+			asteroides[i].pvx = asteroides[i].vx;
+			asteroides[i].pvy = asteroides[i].vy;
+		}
+			
+	}
+	/* Imprimimos resultados finales en fichero */
+	ofstream out("out.txt");
+	for (unsigned i = 0 ; i < asteroides.size() ; i++) {
+	out << fixed << setprecision(3) << asteroides[i].px << " " << asteroides[i].py << " " << asteroides[i].pvx << " " << asteroides[i].pvy << " " << asteroides[i].mass << endl;
+	}
 	
 	return 0;
 }

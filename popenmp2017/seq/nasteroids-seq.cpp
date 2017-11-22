@@ -74,60 +74,28 @@ int main(){
     uniform_real_distribution <double> xdist{0.0, nextafter(width, numeric_limits<double>::max())};
     uniform_real_distribution <double> ydist{0.0, nextafter(height, numeric_limits<double>::max())};
     normal_distribution <double> mdist{mass, sdm};
-   	vector <planeta> planetas;
+   	vector <planeta> planetas ;
     
 		for(int i=0; i<2; i++){
-		
 		planeta nombre;
 		nombre.id=i;
-		nombre.x=xdist(re);
+	/*	nombre.x=xdist(re);
 		nombre.y=ydist(re);
-		nombre.mass=mdist(re); 
+		nombre.mass=mdist(re); */
 		planetas.push_back(nombre);
-
-		}
 		
-		for (unsigned i=0; i<planetas.size();i++){
+		}
+		for(unsigned i=0; i<planetas.size(); i++){
+		cout << planetas[i].id << " ";
+		
+		}
 	
-	cout << planetas[i].id;
-	cout << "\n"; 
-	cout << planetas[i].x;
-	cout << "\n"; 
-	cout << planetas[i].y;
-	cout << "\n"; 
-	cout << planetas[i].mass;
-	cout << "\n"; 
-			
+		planetas.clear();
+		planetas.shrink_to_fit();
+		for(unsigned i=0; i<planetas.size(); i++){
+		cout << planetas[i].id << " ";
 		}
-			
 		
-		for (unsigned i=0; i<planetas.size();i++){
-	if(i==0){
-		planetas.erase(planetas.begin()+i);
-		
-	}
-	cout << planetas[i].id;
-	cout << "\n"; 
-	cout << planetas[i].x;
-	cout << "\n"; 
-	cout << planetas[i].y;
-	cout << "\n"; 
-	cout << planetas[i].mass;
-	cout << "\n"; 		
-		}
-	cout << planetas.size();
-		cout << "\n";
-		
-
-	double pendiente = 2.50;
-	cout << pendiente << "hola crack";
-		cout << "\n";
-	cout <<atan(pendiente)<< endl;
-	pendiente= pendiente - trunc(pendiente);
-	cout << atan(pendiente);
-		cout << "\n";
-	double g = 6.674 *exp(-5);
-	cout << fixed << setprecision(11) << g;
 	
 	return 0;
 	

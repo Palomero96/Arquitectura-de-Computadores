@@ -76,7 +76,7 @@ int main(){
     normal_distribution <double> mdist{mass, sdm};
    	vector <planeta> planetas ;
     
-		for(int i=0; i<2; i++){
+		for(int i=0; i<4; i++){
 		planeta nombre;
 		nombre.id=i;
 	/*	nombre.x=xdist(re);
@@ -85,17 +85,24 @@ int main(){
 		planetas.push_back(nombre);
 		
 		}
+		
 		for(unsigned i=0; i<planetas.size(); i++){
+		
 		cout << planetas[i].id << " ";
 		
 		}
+		planetas.erase(planetas.begin()+2);
+			cout << "\n";
 	
+		for(unsigned i=0; i<planetas.size(); i++){
+		cout << planetas[i].id << " ";
+		}
+		double g = 0.044969058;
+			cout << "\n" << g;
+	g = 6.674 * exp(-5);
+			cout << "\n" << g;
 		planetas.clear();
 		planetas.shrink_to_fit();
-		for(unsigned i=0; i<planetas.size(); i++){
-		cout << planetas[i].id << " ";
-		}
-		
 	
 	return 0;
 	

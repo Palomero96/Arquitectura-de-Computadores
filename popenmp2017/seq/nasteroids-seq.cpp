@@ -136,15 +136,13 @@ void createAstros (int num_asteroides, int num_planetas, unsigned int semilla, v
 	}	
 }
 /* Metodo de calculo de fuerzas de asteroides sobre un asteroide */
-void calcAsts (vector<asteroide> &asteroides, int actast) {
+void calcAsts (vector<asteroide> asteroides, int actast, double &fuerzax, double &fuerzay) {
 	/* Declaramos variables y constantes */
 	double distancia = 0.0;
 	double pendiente = 0.0;
 	double alfa = 0.0;
 	double fuerza = 0.0;
 	double g = 6.674 * exp(-5);
-	int signox = 0;
-	int signoy = 0;
 	/* Para cada asteroide del espacio */
 	for(int i = 0 ; i < asteroides.size() ; i++) {
 		/* Si es el mismo asteroide, no se calcula la fuerza que ejerce sobre si mismo */
@@ -164,40 +162,41 @@ void calcAsts (vector<asteroide> &asteroides, int actast) {
 				pendiente = pendiente - trunc(pendiente);
 			}
 		}
+		/* Calculamos el angulo */
 		alfa = atan(pendiente);
+		/* Calculo de la fuerza */
 		fuerza = g*asteroides[astact].mass*asteroides[i].mass/pow(distancia,2);
-		if (asteroides[actast].x <= asteroides[i].x) {
-			signox = 1;
-		} else {
-			signox = -1;
-		}
-		if (asteroides[actast].y <= asteroides[i].y) {
-			signoy = 1;
-		} else {
-			signoy = -1;
-		}
+		/* Calculamos las componentes de la fuerza y las añadimos al sumatorio de fuerzas */
+		fuerzax = fuerzax + fuerza*sin(alfa);
+		fuerzay = fuerzay + fuerza*cos(alfa);
 	}
 }
 /* Metodo de calculo de fuerzas de planetas sobre un asteroide */
-void calcPlas (planeta *planetas, vector<asteroide> &asteroides, int actast) {
-	/* Declaramos variables */
+void calcPlas (planeta *planetas, vector<asteroide> asteroides, int actast, double &fuerzax, double &fuerzay) {
+	/* Declaramos variables y constantes */
 	double distancia = 0.0;
 	double pendiente = 0.0;
 	double alfa = 0.0;
+	double fuerza = 0.0;
 	double g = 6.674 * exp(-5);
 	/* Para cada planeta del espacio */
-	for(int i = 0 ; i < num_planetas ; i++) {
+	for(int i = 0 ; i < asteroides.size() ; i++) {
 		/* Calculamos la distancia entre los elementos */
 		distancia = sqrt(pow((asteroides[actcast].x - planetas[i].x),2)+pow((asteroides[actast].y - planetas[i].y),2));
 		/* Calculamos la pendiente */
 		pendiente = (asteroides[actast].y - planetas[i].y)/(asteroides[actast].x - planetas[i].x);
-		if(asteroides[actast].x != planetas.x) {
+		if(asteroides[actast].x != planetas[i].x) {
 			if(pendiente < -1  || pendiente > 1){
 				pendiente = pendiente - trunc(pendiente);
 			}
 		}
+		/* Calculamos el angulo */
 		alfa = atan(pendiente);
-		
+		/* Calculo de la fuerza */
+		fuerza = g*asteroides[astact].mass*planetas[i].mass/pow(distancia,2);
+		/* Calculamos las componentes de la fuerza y las añadimos al sumatorio de fuerzas */
+		fuerzax = fuerzax + fuerza*sin(alfa);
+		fuerzay = fuerzay + fuerza*cos(alfa);
 	}
 }
 /* Main */
@@ -216,6 +215,8 @@ int main(int argc, char *argv[]){
     int num_planetas = stoi(argv[3]);
     double pos_rayo = stod(argv[4]);
     unsigned int semilla = stoi(argv[5]);
+    double fuerzax = 0.0;
+    double fuerzay = 0.0;
     /* Creamos lista para los asteroides */
     vector<asteroide> asteroides;
     /* Creamos array para planetas */

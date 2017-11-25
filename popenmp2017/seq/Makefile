@@ -11,7 +11,7 @@ $(BINDIR):
 	mkdir $(BINDIR)
 
 $(BINDIR)/nasteroids-seq: nasteroids-seq.cpp
-	$(CC) $(CFLAGS) -o $(BINDIR)/nasteroids-seq nasteroids-seq.cpp
+	$(CC) $(CFLAGS) -o $(BINDIR)/nasteroids-seq -fopenmp nasteroids-seq.cpp
 
 
 clean:

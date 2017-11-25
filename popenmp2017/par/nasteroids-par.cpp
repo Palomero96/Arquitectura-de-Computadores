@@ -78,8 +78,9 @@ int main(){
   
    	planeta *planetas = new planeta[4];
     	//#pragma omp parallel num_threads(4) shared(planetas){
-		
-		double ini = omp_get_wtime();
+			double ini = omp_get_wtime(); 
+		#pragma omp parallel for
+	
 		for(int i=0; i<4; i++){
 		planeta nombre;
 		nombre.id=i;
@@ -87,11 +88,13 @@ int main(){
 		nombre.y=ydist(re);
 		nombre.mass=mdist(re); 
 		planetas[i] = nombre ;
-		
+		#pragma omp critical
+		cout << "Soy:" << omp_get_thread_num();
 		}
-		double fin = omp_get_wtime();
-		cout << fin - ini << endl;
 //	}
+			double fin = omp_get_wtime();
+		cout << fin - ini << endl;
+		cout << endl;
 		for(unsigned i=0; i<4; i++){
 		
 		cout << planetas[i].id << " " << planetas[i].x << " " << planetas[i].y << " " << planetas[i].mass << endl;

@@ -75,24 +75,37 @@ int main(){
     uniform_real_distribution <double> xdist{0.0, nextafter(width, numeric_limits<double>::max())};
     uniform_real_distribution <double> ydist{0.0, nextafter(height, numeric_limits<double>::max())};
     normal_distribution <double> mdist{mass, sdm};
-  
-   	planeta *planetas = new planeta[4];
-    	//#pragma omp parallel num_threads(4) shared(planetas){
+  	//
+  	vector <planeta> planetas;
+    	
 			double ini = omp_get_wtime(); 
-		#pragma omp parallel for
 	
+	
+		#pragma omp parallel for 
 		for(int i=0; i<4; i++){
 		planeta nombre;
-		nombre.id=i;
-		nombre.x=xdist(re);
-		nombre.y=ydist(re);
+		nombre.id=xdist(re);
+		nombre.x=i;
+		nombre.y=i;
 		nombre.mass=mdist(re); 
-		planetas[i] = nombre ;
 		#pragma omp critical
-		cout << "Soy:" << omp_get_thread_num();
+		planetas.push_back(nombre); 
+		
 		}
-//	}
+		#pragma omp parallel for ordered collapse(2)
+		for(unsigned i=0; i<planetas.size(); i++){
+			for(unsigned j=0; j<planetas.size(); j++){	
+			planetas[i].x=planetas[i].x + planetas[j].y;
+			#pragma omp ordered
+			cout << "Soy:" << omp_get_thread_num()<< " ID: " <<planetas[i].id << " Valor: " << planetas[i].x << endl;
+		}
+		
+		}
+		
+
+cout << endl;
 			double fin = omp_get_wtime();
+			cout << "hay estos hilos uuuu:" << omp_get_num_threads()<<endl;
 		cout << fin - ini << endl;
 		cout << endl;
 		for(unsigned i=0; i<4; i++){

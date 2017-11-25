@@ -75,8 +75,7 @@ int main(){
     uniform_real_distribution <double> xdist{0.0, nextafter(width, numeric_limits<double>::max())};
     uniform_real_distribution <double> ydist{0.0, nextafter(height, numeric_limits<double>::max())};
     normal_distribution <double> mdist{mass, sdm};
-  
-   	planeta *planetas = new planeta[4];
+  	vector <planeta> planetas;
     	//#pragma omp parallel num_threads(4) shared(planetas){
 		
 		double ini = omp_get_wtime();
@@ -86,7 +85,7 @@ int main(){
 		nombre.x=xdist(re);
 		nombre.y=ydist(re);
 		nombre.mass=mdist(re); 
-		planetas[i] = nombre ;
+		planetas.push_back(nombre);
 		
 		}
 		double fin = omp_get_wtime();

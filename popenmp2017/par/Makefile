@@ -11,7 +11,7 @@ $(BINDIR):
 	mkdir $(BINDIR)
 
 $(BINDIR)/nasteroids-par: nasteroids-par.cpp
-	$(CC) $(CFLAGS) -o $(BINDIR)/nasteroids-par nasteroids-par.cpp -fopenmp
+	$(CC) $(CFLAGS) -o $(BINDIR)/nasteroids-par -fopenmp nasteroids-par.cpp
 
 
 clean:

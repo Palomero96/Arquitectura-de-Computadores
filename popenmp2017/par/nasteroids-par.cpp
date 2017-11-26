@@ -9,7 +9,6 @@
 using namespace std;
 /* Estructuras de datos */
 struct asteroide {
-	int id;
 	double x;
 	double y;
 	double mass;
@@ -93,7 +92,6 @@ void createAstros (int num_asteroides, int num_planetas, unsigned int semilla, v
 	#pragma omp parallel for ordered schedule(runtime)
 	for( i = 0 ; i < num_asteroides ; i++){
 		/* Rellenamos los campos del asteroide */
-		asteroides[i].id = i;
 		asteroides[i].vx = 0.0;
 		asteroides[i].vy = 0.0;
 		asteroides[i].x = 0.0;
@@ -232,7 +230,7 @@ int main(int argc, char *argv[]){
     double fuerzax = 0.0;
     double fuerzay = 0.0;
     /* Creamos lista para los asteroides */
-    vector<asteroide> asteroides;
+    vector<asteroide> asteroides (num_asteroides);
     /* Creamos array para planetas */
 	planeta *planetas = new planeta[num_planetas];
 	/* Llamamos a la funcion para crear los astros */

@@ -110,9 +110,6 @@ void createAstros (int num_asteroides, int num_planetas, unsigned int semilla, v
 	/* Creacion de planetas*/
 	#pragma omp parallel for ordered schedule(runtime)
 	for(i = 0; i < num_planetas ; i++){
-		/* Creamos el planeta */
-		planeta paux;
-		/* Rellenamos sus ejes en funcion de su resto con 4 */	
 		#pragma omp ordered
 		{
 		/* Rellenamos los ejes del planeta en funcion de su resto con 4 */	
@@ -135,9 +132,10 @@ void createAstros (int num_asteroides, int num_planetas, unsigned int semilla, v
     			break;
 		}
 		/* Rellenamos su masa */
-		paux.mass = mdist(re)*10;
+		planetas[i].mass = mdist(re)*10;
 		
-	}	
+		}	
+	}
 }
 /* Metodo de calculo de fuerzas de asteroides sobre un asteroide */
 void calcAsts (vector<asteroide> asteroides,  int actast, double &fuerzax, double &fuerzay) {

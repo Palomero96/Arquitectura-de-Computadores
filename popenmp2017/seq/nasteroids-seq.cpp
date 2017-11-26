@@ -125,7 +125,7 @@ void createAstros (int num_asteroides, int num_planetas, unsigned int semilla, v
     			break;
 		}
 		/* Rellenamos su masa */
-		paux.mass = mdist(re)*10;
+		planetas[i].mass = mdist(re)*10;
 		
 	}	
 }

@@ -259,7 +259,7 @@ int main(int argc, char *argv[]){
 			break;
 		}
 		/* Calculamos el resultado de la iteracion */
-		#pragma omp parallel for schedule(runtime)
+		#pragma omp parallel for private(fuerzax, fuerzay) schedule(runtime)
 		for(unsigned i = 0; i < asteroides.size() ; i++){
 			fuerzax = 0.0;
 			fuerzay = 0.0;
@@ -307,7 +307,6 @@ int main(int argc, char *argv[]){
 			asteroides[i].pvx = asteroides[i].vx;
 			asteroides[i].pvy = asteroides[i].vy;
 		}
-			
 	}
 	/* Imprimimos resultados finales en fichero */
 	ofstream out("out.txt");

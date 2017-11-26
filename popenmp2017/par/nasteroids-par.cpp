@@ -92,22 +92,19 @@ void createAstros (int num_asteroides, int num_planetas, unsigned int semilla, v
 	/* Creacion de asteroides */
 	#pragma omp parallel for ordered schedule(runtime)
 	for( i = 0 ; i < num_asteroides ; i++){
-		/* Creamos el asteroide y rellenamos sus campos */
-		asteroide aaux;
-		aaux.id = i;
-		aaux.vx = 0.0;
-		aaux.vy = 0.0;
-		aaux.x = 0.0;
-		aaux.y = 0.0;
-		aaux.pvx = 0.0;
-		aaux.pvy = 0.0;
+		/* Rellenamos los campos del asteroide */
+		asteroides[i].id = i;
+		asteroides[i].vx = 0.0;
+		asteroides[i].vy = 0.0;
+		asteroides[i].x = 0.0;
+		asteroides[i].y = 0.0;
+		asteroides[i].pvx = 0.0;
+		asteroides[i].pvy = 0.0;
 		#pragma omp ordered
 		{
-		aaux.px = xdist(re);
-		aaux.py = ydist(re);
-		aaux.mass = mdist(re);
-		/* Añadimos el asteroide a la lista */
-		asteroides.push_back(aaux);
+		asteroides[i].px = xdist(re);
+		asteroides[i].py = ydist(re);
+		asteroides[i].mass = mdist(re);
 		}
 	}
 	/* Creacion de planetas*/
@@ -118,29 +115,27 @@ void createAstros (int num_asteroides, int num_planetas, unsigned int semilla, v
 		/* Rellenamos sus ejes en funcion de su resto con 4 */	
 		#pragma omp ordered
 		{
+		/* Rellenamos los ejes del planeta en funcion de su resto con 4 */	
 		switch ( i%4 ){
     		case 0:
-    			paux.x = 0.0;
-    			paux.y = ydist(re);
+    			planetas[i].x = 0.0;
+    			planetas[i].y = ydist(re);
     			break;
     		case 1:
-    			paux.x = xdist(re);
-    			paux.y = 0.0;
+    			planetas[i].x = xdist(re);
+    			planetas[i].y = 0.0;
 				break;
     		case 2:
-    			paux.x = 200.0;
-    			paux.y = ydist(re);
+    			planetas[i].x = 200.0;
+    			planetas[i].y = ydist(re);
 				break;
     		case 3:
-    			paux.x = xdist(re);
-    			paux.y = 200.0;
+    			planetas[i].x = xdist(re);
+    			planetas[i].y = 200.0;
     			break;
 		}
 		/* Rellenamos su masa */
 		paux.mass = mdist(re)*10;
-		/* Añadimos el planeta al array */
-		planetas[i] = paux;
-		}
 		
 	}	
 }
@@ -301,6 +296,8 @@ int main(int argc, char *argv[]){
 				i--;
 			}
 		}
+		/* Liberamos recursos de asteroides muertos */
+		asteroides.shrink_to_fit();
 		/* Guardamos los datos como anteriores en los asteroides */	
 		#pragma omp parallel for schedule(runtime)
 		for(unsigned i = 0; i < asteroides.size() ; i++){

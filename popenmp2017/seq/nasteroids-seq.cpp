@@ -91,48 +91,41 @@ void createAstros (int num_asteroides, int num_planetas, unsigned int semilla, v
 	normal_distribution<double> mdist{mass, sdm};
 	/* Creacion de asteroides */
 	for( i = 0 ; i < num_asteroides ; i++){
-		/* Creamos el asteroide y rellenamos sus campos */
-		asteroide aaux;
-		aaux.id = i;
-		aaux.px = xdist(re);
-		aaux.py = ydist(re);
-		aaux.mass = mdist(re);
-		aaux.vx = 0.0;
-		aaux.vy = 0.0;
-		aaux.x = 0.0;
-		aaux.y = 0.0;
-		aaux.pvx = 0.0;
-		aaux.pvy = 0.0;
-		/* Añadimos el asteroide a la lista */
-		asteroides.push_back(aaux);
+		/* Rellenamos los campos del asteroide */
+		asteroides[i].id = i;
+		asteroides[i].px = xdist(re);
+		asteroides[i].py = ydist(re);
+		asteroides[i].mass = mdist(re);
+		asteroides[i].vx = 0.0;
+		asteroides[i].vy = 0.0;
+		asteroides[i].x = 0.0;
+		asteroides[i].y = 0.0;
+		asteroides[i].pvx = 0.0;
+		asteroides[i].pvy = 0.0;
 	}
 	/* Creacion de planetas*/
 	for(i = 0; i < num_planetas ; i++){
-		/* Creamos el planeta */
-		planeta paux;
-		/* Rellenamos sus ejes en funcion de su resto con 4 */	
+		/* Rellenamos los ejes del planeta en funcion de su resto con 4 */	
 		switch ( i%4 ){
     		case 0:
-    			paux.x = 0.0;
-    			paux.y = ydist(re);
+    			planetas[i].x = 0.0;
+    			planetas[i].y = ydist(re);
     			break;
     		case 1:
-    			paux.x = xdist(re);
-    			paux.y = 0.0;
+    			planetas[i].x = xdist(re);
+    			planetas[i].y = 0.0;
 				break;
     		case 2:
-    			paux.x = 200.0;
-    			paux.y = ydist(re);
+    			planetas[i].x = 200.0;
+    			planetas[i].y = ydist(re);
 				break;
     		case 3:
-    			paux.x = xdist(re);
-    			paux.y = 200.0;
+    			planetas[i].x = xdist(re);
+    			planetas[i].y = 200.0;
     			break;
 		}
 		/* Rellenamos su masa */
 		paux.mass = mdist(re)*10;
-		/* Añadimos el planeta al array */
-		planetas[i] = paux;
 		
 	}	
 }
@@ -226,7 +219,7 @@ int main(int argc, char *argv[]){
     double fuerzax = 0.0;
     double fuerzay = 0.0;
     /* Creamos lista para los asteroides */
-    vector<asteroide> asteroides;
+    vector<asteroide> asteroides(num_asteroides);
     /* Creamos array para planetas */
 	planeta *planetas = new planeta[num_planetas];
 	/* Llamamos a la funcion para crear los astros */
@@ -288,6 +281,8 @@ int main(int argc, char *argv[]){
 				i--;
 			}
 		}
+		/* Liberamos recursos de asteroides muertos */
+		asteroides.shrink_to_fit();
 		/* Guardamos los datos como anteriores en los asteroides */	
 		for(unsigned i = 0; i < asteroides.size() ; i++){
 			asteroides[i].px = asteroides[i].x;
@@ -306,5 +301,6 @@ int main(int argc, char *argv[]){
 	double fin = omp_get_wtime();
 	/* Hayamos la diferencia de tiempos para saber el tiempo empleado en la ejecucion */
 	out << fin - ini << endl;
+	/* Liberamos recursos reservados durante la ejecución */
 	return 0;
 }

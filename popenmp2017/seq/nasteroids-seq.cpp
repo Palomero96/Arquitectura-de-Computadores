@@ -126,7 +126,6 @@ void createAstros (int num_asteroides, int num_planetas, unsigned int semilla, v
 		}
 		/* Rellenamos su masa */
 		planetas[i].mass = mdist(re)*10;
-		
 	}	
 }
 /* Metodo de calculo de fuerzas de asteroides sobre un asteroide */
@@ -136,9 +135,10 @@ void calcAsts (vector<asteroide> asteroides, int actast, double &fuerzax, double
 	double pendiente = 0.0;
 	double alfa = 0.0;
 	double fuerza = 0.0;
-	double g = 0.044969058;
+	double g = 6.674 * exp(-5);
 	/* Para cada asteroide del espacio */
 	for(unsigned i = 0 ; i < asteroides.size() ; i++) {
+		
 		/* Si es el mismo asteroide, no se calcula la fuerza que ejerce sobre si mismo */
 		int actasta = (int) i;
 		if (actast == actasta) {
@@ -152,6 +152,7 @@ void calcAsts (vector<asteroide> asteroides, int actast, double &fuerzax, double
 		}
 		/* Calculamos la pendiente */
 		pendiente = (asteroides[actast].py - asteroides[i].py)/(asteroides[actast].px - asteroides[i].px);
+		/* Truncamos la pendiente si es necesario */
 		if(asteroides[actast].px != asteroides[i].px) {
 			if(pendiente < -1  || pendiente > 1){
 				pendiente = pendiente - trunc(pendiente);
@@ -160,30 +161,33 @@ void calcAsts (vector<asteroide> asteroides, int actast, double &fuerzax, double
 		/* Calculamos el angulo */
 		alfa = atan(pendiente);
 		/* Calculo de la fuerza */
-		fuerza = g*asteroides[actast].mass*asteroides[i].mass/pow(distancia,2);
+		fuerza = (g*asteroides[actast].mass*asteroides[i].mass)/pow(distancia,2);
 		/* Comprobamos que la fuerza no sea superior a la permitida */
 		if(fuerza > 200.0){
 			fuerza = 200.0;
 		}
 		/* Calculamos las componentes de la fuerza y las añadimos al sumatorio de fuerzas */
-		fuerzax = fuerzax + fuerza*sin(alfa);
-		fuerzay = fuerzay + fuerza*cos(alfa);
+		fuerzax = fuerzax + fuerza*cos(alfa);
+		fuerzay = fuerzay + fuerza*sin(alfa);
+		
+		fuerza = 0.0;
 	}
 }
 /* Metodo de calculo de fuerzas de planetas sobre un asteroide */
-void calcPlas (planeta *planetas, vector<asteroide> asteroides, int actast, double &fuerzax, double &fuerzay) {
+void calcPlas (planeta *planetas, int num_planetas, vector<asteroide> asteroides, int actast, double &fuerzax, double &fuerzay) {
 	/* Declaramos variables y constantes */
 	double distancia = 0.0;
 	double pendiente = 0.0;
 	double alfa = 0.0;
 	double fuerza = 0.0;
-	double g = 0.044969058;
+	double g = 6.674 * exp(-5);
 	/* Para cada planeta del espacio */
-	for(unsigned i = 0 ; i < asteroides.size() ; i++) {
+	for(int i = 0 ; i < num_planetas ; i++) {
 		/* Calculamos la distancia entre los elementos */
 		distancia = sqrt(pow((asteroides[actast].px - planetas[i].x),2)+pow((asteroides[actast].py - planetas[i].y),2));
 		/* Calculamos la pendiente */
 		pendiente = (asteroides[actast].py - planetas[i].y)/(asteroides[actast].px - planetas[i].x);
+		/* Truncamos la pendiente si es necesario */
 		if(asteroides[actast].px != planetas[i].x) {
 			if(pendiente < -1  || pendiente > 1){
 				pendiente = pendiente - trunc(pendiente);
@@ -192,15 +196,18 @@ void calcPlas (planeta *planetas, vector<asteroide> asteroides, int actast, doub
 		/* Calculamos el angulo */
 		alfa = atan(pendiente);
 		/* Calculo de la fuerza */
-		fuerza = g*asteroides[actast].mass*planetas[i].mass/pow(distancia,2);
+		fuerza = (g*asteroides[actast].mass*planetas[i].mass)/pow(distancia,2);
 		/* Comprobamos que la fuerza no sea superior a la permitida */
 		if(fuerza > 200.0){
 			fuerza = 200.0;
 		}
 		/* Calculamos las componentes de la fuerza y las añadimos al sumatorio de fuerzas */
-		fuerzax = fuerzax + fuerza*sin(alfa);
-		fuerzay = fuerzay + fuerza*cos(alfa);
+		fuerzax = fuerzax + fuerza*cos(alfa);
+		fuerzay = fuerzay + fuerza*sin(alfa);
+		
+		fuerza = 0.0;
 	}
+	
 }
 /* Main */
 int main(int argc, char *argv[]){
@@ -249,7 +256,7 @@ int main(int argc, char *argv[]){
 			fuerzay = 0.0;
 			/* Llamamos a los metodos que calculan fuerzas */
 			calcAsts(asteroides, i, fuerzax, fuerzay);
-			calcPlas(planetas, asteroides, i, fuerzax, fuerzay);
+			calcPlas(planetas, num_planetas, asteroides, i, fuerzax, fuerzay);
 			/* Guardamos los datos actuales del asteroide */
 			asteroides[i].vx = asteroides[i].pvx + (fuerzax/asteroides[i].mass) * 0.1;
 			asteroides[i].vy = asteroides[i].pvy + (fuerzay/asteroides[i].mass) * 0.1;
@@ -301,6 +308,5 @@ int main(int argc, char *argv[]){
 	double fin = omp_get_wtime();
 	/* Hayamos la diferencia de tiempos para saber el tiempo empleado en la ejecucion */
 	out << fin - ini << endl;
-	/* Liberamos recursos reservados durante la ejecución */
 	return 0;
 }

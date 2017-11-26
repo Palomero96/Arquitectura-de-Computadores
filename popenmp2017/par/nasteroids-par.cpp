@@ -133,7 +133,6 @@ void createAstros (int num_asteroides, int num_planetas, unsigned int semilla, v
 		}
 		/* Rellenamos su masa */
 		planetas[i].mass = mdist(re)*10;
-		
 		}	
 	}
 }
@@ -144,7 +143,7 @@ void calcAsts (vector<asteroide> asteroides,  int actast, double &fuerzax, doubl
 	double pendiente = 0.0;
 	double alfa = 0.0;
 	double fuerza = 0.0;
-	double g = 0.044969058;
+	double g = 6.674 * exp(-5);
 	/* Para cada asteroide del espacio */
 	for(unsigned i = 0 ; i < asteroides.size() ; i++) {
 		/* Si es el mismo asteroide, no se calcula la fuerza que ejerce sobre si mismo */
@@ -160,6 +159,7 @@ void calcAsts (vector<asteroide> asteroides,  int actast, double &fuerzax, doubl
 		}
 		/* Calculamos la pendiente */
 		pendiente = (asteroides[actast].py - asteroides[i].py)/(asteroides[actast].px - asteroides[i].px);
+		/* Truncamos la pendiente si es necesario */
 		if(asteroides[actast].px != asteroides[i].px) {
 			if(pendiente < -1  || pendiente > 1){
 				pendiente = pendiente - trunc(pendiente);
@@ -174,8 +174,10 @@ void calcAsts (vector<asteroide> asteroides,  int actast, double &fuerzax, doubl
 			fuerza = 200.0;
 		}
 		/* Calculamos las componentes de la fuerza y las añadimos al sumatorio de fuerzas */
-		fuerzax = fuerzax + fuerza*sin(alfa);
-		fuerzay = fuerzay + fuerza*cos(alfa);
+		fuerzax = fuerzax + fuerza*cos(alfa);
+		fuerzay = fuerzay + fuerza*sin(alfa);
+		
+		fuerza = 0.0;
 	}
 }
 /* Metodo de calculo de fuerzas de planetas sobre un asteroide */
@@ -185,13 +187,14 @@ void calcPlas (planeta *planetas, vector<asteroide> asteroides, int actast, doub
 	double pendiente = 0.0;
 	double alfa = 0.0;
 	double fuerza = 0.0;
-	double g = 0.044969058;
+	double g = 6.674 * exp(-5);
 	/* Para cada planeta del espacio */
 	for(unsigned i = 0 ; i < asteroides.size() ; i++) {
 		/* Calculamos la distancia entre los elementos */
 		distancia = sqrt(pow((asteroides[actast].px - planetas[i].x),2)+pow((asteroides[actast].py - planetas[i].y),2));
 		/* Calculamos la pendiente */
 		pendiente = (asteroides[actast].py - planetas[i].y)/(asteroides[actast].px - planetas[i].x);
+		/* Truncamos la pendiente si es necesario */
 		if(asteroides[actast].px != planetas[i].x) {
 			if(pendiente < -1  || pendiente > 1){
 				pendiente = pendiente - trunc(pendiente);
@@ -206,8 +209,10 @@ void calcPlas (planeta *planetas, vector<asteroide> asteroides, int actast, doub
 			fuerza = 200.0;
 		}
 		/* Calculamos las componentes de la fuerza y las añadimos al sumatorio de fuerzas */
-		fuerzax = fuerzax + fuerza*sin(alfa);
-		fuerzay = fuerzay + fuerza*cos(alfa);
+		fuerzax = fuerzax + fuerza*cos(alfa);
+		fuerzay = fuerzay + fuerza*sin(alfa);
+		
+		fuerza = 0.0;
 	}
 }
 /* Main */

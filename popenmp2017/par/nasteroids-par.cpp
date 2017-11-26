@@ -225,7 +225,6 @@ int main(int argc, char *argv[]){
 	if (!checkArgs(argc, argv)) {
 		return -1; 
 	}
-	
 	/* Declaracion de variables */
 	int num_asteroides = stoi(argv[1]);
     int num_iteraciones = stoi(argv[2]);

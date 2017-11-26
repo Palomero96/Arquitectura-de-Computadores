@@ -1,7 +1,6 @@
 /* Librerias */
 #include <iostream>
 #include <regex>
-#include <cmath>
 #include <random>
 #include <vector>
 #include <fstream>

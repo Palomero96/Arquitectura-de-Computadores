@@ -211,7 +211,7 @@ void calcPlas (planeta *planetas, vector<asteroide> asteroides, int actast, doub
 }
 /* Main */
 int main(int argc, char *argv[]){
-	
+	/* Obtenemos el tiempo antes de la ejecucion del codigo a evaluar */
 	double ini = omp_get_wtime();
 	/* Llamamos a funcion para que compruebe argumentos */
 	if (!checkArgs(argc, argv)) {
@@ -304,7 +304,9 @@ int main(int argc, char *argv[]){
 	for (unsigned i = 0 ; i < asteroides.size() ; i++) {
 		out << fixed << setprecision(3) << asteroides[i].px << " " << asteroides[i].py << " " << asteroides[i].pvx << " " << asteroides[i].pvy << " " << asteroides[i].mass << endl;
 	}
+	/* Obtenemos el tiempo después de la ejecucion del codigo a evaluar */
 	double fin = omp_get_wtime();
+	/* Hayamos la diferencia de tiempos para saber el tiempo empleado en la ejecucion */
 	out << fin - ini << endl;
 	return 0;
 }

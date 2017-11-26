@@ -91,27 +91,34 @@ void createAstros (int num_asteroides, int num_planetas, unsigned int semilla, v
 	uniform_real_distribution<double> ydist{0.0, nextafter(height, numeric_limits<double>::max())};
 	normal_distribution<double> mdist{mass, sdm};
 	/* Creacion de asteroides */
+	#pragma omp parallel for ordered schedule(runtime)
 	for( i = 0 ; i < num_asteroides ; i++){
 		/* Creamos el asteroide y rellenamos sus campos */
 		asteroide aaux;
 		aaux.id = i;
-		aaux.px = xdist(re);
-		aaux.py = ydist(re);
-		aaux.mass = mdist(re);
 		aaux.vx = 0.0;
 		aaux.vy = 0.0;
 		aaux.x = 0.0;
 		aaux.y = 0.0;
 		aaux.pvx = 0.0;
 		aaux.pvy = 0.0;
+		#pragma omp ordered
+		{
+		aaux.px = xdist(re);
+		aaux.py = ydist(re);
+		aaux.mass = mdist(re);
 		/* Añadimos el asteroide a la lista */
 		asteroides.push_back(aaux);
+		}
 	}
 	/* Creacion de planetas*/
+	#pragma omp parallel for ordered schedule(runtime)
 	for(i = 0; i < num_planetas ; i++){
 		/* Creamos el planeta */
 		planeta paux;
 		/* Rellenamos sus ejes en funcion de su resto con 4 */	
+		#pragma omp ordered
+		{
 		switch ( i%4 ){
     		case 0:
     			paux.x = 0.0;
@@ -134,11 +141,12 @@ void createAstros (int num_asteroides, int num_planetas, unsigned int semilla, v
 		paux.mass = mdist(re)*10;
 		/* Añadimos el planeta al array */
 		planetas[i] = paux;
+		}
 		
 	}	
 }
 /* Metodo de calculo de fuerzas de asteroides sobre un asteroide */
-void calcAsts (vector<asteroide> asteroides, int actast, double &fuerzax, double &fuerzay) {
+void calcAsts (vector<asteroide> asteroides,  int actast, double &fuerzax, double &fuerzay) {
 	/* Declaramos variables y constantes */
 	double distancia = 0.0;
 	double pendiente = 0.0;
@@ -213,12 +221,11 @@ void calcPlas (planeta *planetas, vector<asteroide> asteroides, int actast, doub
 /* Main */
 int main(int argc, char *argv[]){
 	
-	
+	double ini = omp_get_wtime();
 	/* Llamamos a funcion para que compruebe argumentos */
 	if (!checkArgs(argc, argv)) {
 		return -1; 
 	}
-	/* Declaracion de constantes */
 	
 	/* Declaracion de variables */
 	int num_asteroides = stoi(argv[1]);
@@ -238,11 +245,15 @@ int main(int argc, char *argv[]){
     /* Imprimimos los datos iniciales en el fichero */
     init << num_asteroides << " " << num_iteraciones << " " << num_planetas << " " << pos_rayo << " " << semilla << endl;
     /* Imprimimos los asteroides en el fichero */
+    #pragma omp for ordered schedule(runtime)
     for (unsigned i = 0 ; i < asteroides.size() ; i++){
+    	#pragma omp ordered
     	init << fixed << setprecision(3) <<  asteroides[i].px << " " << asteroides[i].py << " " << asteroides[i].mass << endl;
     }
     /* Imprimimos los planetas en el fichero */
+    #pragma omp for ordered schedule(runtime)
     for (int i = 0; i<num_planetas ; i++) {
+    	#pragma omp ordered
     	init << fixed << setprecision(3) << planetas[i].x << " " << planetas[i].y << " " << planetas[i].mass << " " << endl;
 	}
 	/* Imprimimos el rayo en el fichero */
@@ -254,6 +265,7 @@ int main(int argc, char *argv[]){
 			break;
 		}
 		/* Calculamos el resultado de la iteracion */
+		#pragma omp parallel for schedule(runtime)
 		for(unsigned i = 0; i < asteroides.size() ; i++){
 			fuerzax = 0.0;
 			fuerzay = 0.0;
@@ -292,6 +304,7 @@ int main(int argc, char *argv[]){
 			}
 		}
 		/* Guardamos los datos como anteriores en los asteroides */	
+		#pragma omp parallel for schedule(runtime)
 		for(unsigned i = 0; i < asteroides.size() ; i++){
 			asteroides[i].px = asteroides[i].x;
 			asteroides[i].py = asteroides[i].y;
@@ -302,9 +315,12 @@ int main(int argc, char *argv[]){
 	}
 	/* Imprimimos resultados finales en fichero */
 	ofstream out("out.txt");
+	#pragma omp parallel for ordered schedule(runtime)
 	for (unsigned i = 0 ; i < asteroides.size() ; i++) {
-	out << fixed << setprecision(3) << asteroides[i].px << " " << asteroides[i].py << " " << asteroides[i].pvx << " " << asteroides[i].pvy << " " << asteroides[i].mass << endl;
+		#pragma omp ordered
+		out << fixed << setprecision(3) << asteroides[i].px << " " << asteroides[i].py << " " << asteroides[i].pvx << " " << asteroides[i].pvy << " " << asteroides[i].mass << endl;
 	}
-	
+	double fin = omp_get_wtime();
+	out << fin - ini << endl;
 	return 0;
 }

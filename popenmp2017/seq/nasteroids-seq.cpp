@@ -9,7 +9,6 @@
 using namespace std;
 /* Estructuras de datos */
 struct asteroide {
-	int id;
 	double x;
 	double y;
 	double mass;
@@ -92,7 +91,6 @@ void createAstros (int num_asteroides, int num_planetas, unsigned int semilla, v
 	/* Creacion de asteroides */
 	for( i = 0 ; i < num_asteroides ; i++){
 		/* Rellenamos los campos del asteroide */
-		asteroides[i].id = i;
 		asteroides[i].px = xdist(re);
 		asteroides[i].py = ydist(re);
 		asteroides[i].mass = mdist(re);

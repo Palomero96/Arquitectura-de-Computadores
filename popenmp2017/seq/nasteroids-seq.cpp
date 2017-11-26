@@ -6,6 +6,7 @@
 #include <vector>
 #include <fstream>
 #include <iomanip>
+#include <omp.h>
 using namespace std;
 /* Estructuras de datos */
 struct asteroide {
@@ -212,7 +213,7 @@ void calcPlas (planeta *planetas, vector<asteroide> asteroides, int actast, doub
 /* Main */
 int main(int argc, char *argv[]){
 	
-	
+	double ini = omp_get_wtime();
 	/* Llamamos a funcion para que compruebe argumentos */
 	if (!checkArgs(argc, argv)) {
 		return -1; 
@@ -302,8 +303,9 @@ int main(int argc, char *argv[]){
 	/* Imprimimos resultados finales en fichero */
 	ofstream out("out.txt");
 	for (unsigned i = 0 ; i < asteroides.size() ; i++) {
-	out << fixed << setprecision(3) << asteroides[i].px << " " << asteroides[i].py << " " << asteroides[i].pvx << " " << asteroides[i].pvy << " " << asteroides[i].mass << endl;
+		out << fixed << setprecision(3) << asteroides[i].px << " " << asteroides[i].py << " " << asteroides[i].pvx << " " << asteroides[i].pvy << " " << asteroides[i].mass << endl;
 	}
-	
+	double fin = omp_get_wtime();
+	out << fin - ini << endl;
 	return 0;
 }

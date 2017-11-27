@@ -215,7 +215,7 @@ int main(int argc, char *argv[]){
 	if (!checkArgs(argc, argv)) {
 		return -1; 
 	}
-		/* Declaracion de variables */
+	/* Declaracion de variables */
 	int num_asteroides = stoi(argv[1]);
     int num_iteraciones = stoi(argv[2]);
     int num_planetas = stoi(argv[3]);
@@ -231,7 +231,7 @@ int main(int argc, char *argv[]){
     createAstros(num_asteroides, num_planetas, semilla, asteroides, planetas);
     ofstream init("init_conf.txt");
     /* Imprimimos los datos iniciales en el fichero */
-    init << num_asteroides << " " << num_iteraciones << " " << num_planetas << " " << pos_rayo << " " << semilla << endl;
+    init << fixed << setprecision(3) << num_asteroides << " " << num_iteraciones << " " << num_planetas << " " << pos_rayo << " " << semilla << endl;
     /* Imprimimos los asteroides en el fichero */
     for (unsigned i = 0 ; i < asteroides.size() ; i++){
     	init << fixed << setprecision(3) <<  asteroides[i].px << " " << asteroides[i].py << " " << asteroides[i].mass << endl;

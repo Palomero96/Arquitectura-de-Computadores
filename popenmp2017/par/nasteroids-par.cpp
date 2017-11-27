@@ -237,7 +237,7 @@ int main(int argc, char *argv[]){
     createAstros(num_asteroides, num_planetas, semilla, asteroides, planetas);
     ofstream init("init_conf.txt");
     /* Imprimimos los datos iniciales en el fichero */
-    init << num_asteroides << " " << num_iteraciones << " " << num_planetas << " " << pos_rayo << " " << semilla << endl;
+    init << fixed << setprecision(3) << num_asteroides << " " << num_iteraciones << " " << num_planetas << " " << pos_rayo << " " << semilla << endl;
     /* Imprimimos los asteroides en el fichero */
     #pragma omp for ordered schedule(runtime)
     for (unsigned i = 0 ; i < asteroides.size() ; i++){

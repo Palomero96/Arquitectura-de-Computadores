@@ -216,7 +216,7 @@ void calcPlas (planeta *planetas, vector<asteroide> asteroides, int actast, doub
 /* Main */
 int main(int argc, char *argv[]){
 	/* Obtenemos el tiempo antes de la ejecucion del codigo a evaluar */
-	double ini = omp_get_wtime();
+	double init = omp_get_wtime();
 	/* Llamamos a funcion para que compruebe argumentos */
 	if (!checkArgs(argc, argv)) {
 		return -1; 
@@ -235,24 +235,25 @@ int main(int argc, char *argv[]){
 	planeta *planetas = new planeta[num_planetas];
 	/* Llamamos a la funcion para crear los astros */
     createAstros(num_asteroides, num_planetas, semilla, asteroides, planetas);
-    ofstream init("init_conf.txt");
+    ofstream ini("init_conf.txt");
     /* Imprimimos los datos iniciales en el fichero */
-    init << fixed << setprecision(3) << num_asteroides << " " << num_iteraciones << " " << num_planetas << " " << pos_rayo << " " << semilla << endl;
+    ini << fixed << setprecision(3) << num_asteroides << " " << num_iteraciones << " " << num_planetas << " " << pos_rayo << " " << semilla << endl;
     /* Imprimimos los asteroides en el fichero */
     #pragma omp for ordered schedule(runtime)
     for (unsigned i = 0 ; i < asteroides.size() ; i++){
     	#pragma omp ordered
-    	init << fixed << setprecision(3) <<  asteroides[i].px << " " << asteroides[i].py << " " << asteroides[i].mass << endl;
+    	ini << fixed << setprecision(3) <<  asteroides[i].px << " " << asteroides[i].py << " " << asteroides[i].mass << endl;
     }
     /* Imprimimos los planetas en el fichero */
     #pragma omp for ordered schedule(runtime)
     for (int i = 0; i<num_planetas ; i++) {
     	#pragma omp ordered
-    	init << fixed << setprecision(3) << planetas[i].x << " " << planetas[i].y << " " << planetas[i].mass << " " << endl;
+    	ini << fixed << setprecision(3) << planetas[i].x << " " << planetas[i].y << " " << planetas[i].mass << " " << endl;
 	}
 	/* Imprimimos el rayo en el fichero */
-	init << fixed << setprecision(3) << 0.000 << " " << pos_rayo << endl;
+	ini << fixed << setprecision(3) << 0.000 << " " << pos_rayo << endl;
 	/* Realizamos las iteraciones */
+	double inii = omp_get_wtime();
 	for(int a = 0 ; a < num_iteraciones ; a++) {
 		/* Comprobamos que no se hayan destruido todos los asteroides */
 		if (asteroides.size() == 0) {
@@ -308,6 +309,7 @@ int main(int argc, char *argv[]){
 			asteroides[i].pvy = asteroides[i].vy;
 		}
 	}
+	double fini = omp_get_wtime();
 	/* Imprimimos resultados finales en fichero */
 	ofstream out("out.txt");
 	#pragma omp parallel for ordered schedule(runtime)
@@ -316,8 +318,9 @@ int main(int argc, char *argv[]){
 		out << fixed << setprecision(3) << asteroides[i].px << " " << asteroides[i].py << " " << asteroides[i].pvx << " " << asteroides[i].pvy << " " << asteroides[i].mass << endl;
 	}
 	/* Obtenemos el tiempo después de la ejecucion del codigo a evaluar */
-	double fin = omp_get_wtime();
+	double fint = omp_get_wtime();
 	/* Hayamos la diferencia de tiempos para saber el tiempo empleado en la ejecucion */
-	out << fin - ini << endl;
+	cout << "Tiempo de iteraciones:" << fini - inii << endl;
+	cout << "Tiempo total:" << fint - init << endl;
 	return 0;
 }

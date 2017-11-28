@@ -55,7 +55,7 @@ bool checkArgs (int argc, char *argv[]) {
 			check = false;
 		} else {
 			double ray = stod(argv[4]);
-			if (ray > 198 || ray < 2) {
+			if (ray > 200 || ray < 0) {
 				check = false;
 			}
 		}

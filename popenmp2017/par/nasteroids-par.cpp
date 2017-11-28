@@ -55,7 +55,7 @@ bool checkArgs (int argc, char *argv[]) {
 			check = false;
 		} else {
 			double ray = stod(argv[4]);
-			if (ray > 198 || ray < 2) {
+			if (ray > 200 || ray < 0) {
 				check = false;
 			}
 		}
@@ -179,7 +179,7 @@ void calcAsts (vector<asteroide> asteroides,  int actast, double &fuerzax, doubl
 	}
 }
 /* Metodo de calculo de fuerzas de planetas sobre un asteroide */
-void calcPlas (planeta *planetas, vector<asteroide> asteroides, int actast, double &fuerzax, double &fuerzay) {
+void calcPlas (planeta *planetas, int num_planetas, vector<asteroide> asteroides, int actast, double &fuerzax, double &fuerzay) {
 	/* Declaramos variables y constantes */
 	double distancia = 0.0;
 	double pendiente = 0.0;
@@ -187,7 +187,7 @@ void calcPlas (planeta *planetas, vector<asteroide> asteroides, int actast, doub
 	double fuerza = 0.0;
 	double g = 6.674 * exp(-5);
 	/* Para cada planeta del espacio */
-	for(unsigned i = 0 ; i < asteroides.size() ; i++) {
+	for(int i = 0 ; i < num_planetas ; i++) {
 		/* Calculamos la distancia entre los elementos */
 		distancia = sqrt(pow((asteroides[actast].px - planetas[i].x),2)+pow((asteroides[actast].py - planetas[i].y),2));
 		/* Calculamos la pendiente */
@@ -264,7 +264,7 @@ int main(int argc, char *argv[]){
 			fuerzay = 0.0;
 			/* Llamamos a los metodos que calculan fuerzas */
 			calcAsts(asteroides, i, fuerzax, fuerzay);
-			calcPlas(planetas, asteroides, i, fuerzax, fuerzay);
+			calcPlas(planetas, num_planetas, asteroides, i, fuerzax, fuerzay);
 			/* Guardamos los datos actuales del asteroide */
 			asteroides[i].vx = asteroides[i].pvx + (fuerzax/asteroides[i].mass) * 0.1;
 			asteroides[i].vy = asteroides[i].pvy + (fuerzay/asteroides[i].mass) * 0.1;

@@ -1,5 +1,5 @@
 CC=g++
-CFLAGS=-std=c++14 -g -Wall -Wextra -Wno-deprecated -Werror -pedantic -pedantic-errors -O3 -DNDEBUG -fopenmp
+CFLAGS=-std=c++14 -g -Wall -Wextra -Wno-deprecated -Werror -pedantic -pedantic-errors -O3 -DNDEBUG
 BINDIR=bin
 PROGS=\
 $(BINDIR)/nasteroids-seq \

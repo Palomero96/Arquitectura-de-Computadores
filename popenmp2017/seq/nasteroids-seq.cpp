@@ -5,7 +5,6 @@
 #include <vector>
 #include <fstream>
 #include <iomanip>
-#include <omp.h>
 using namespace std;
 /* Estructuras de datos */
 struct asteroide {

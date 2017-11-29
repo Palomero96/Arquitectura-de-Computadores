@@ -5,6 +5,7 @@
 #include <vector>
 #include <fstream>
 #include <iomanip>
+#include <omp.h>
 using namespace std;
 /* Estructuras de datos */
 struct asteroide {
@@ -83,17 +84,25 @@ void createAstros (int num_asteroides, int num_planetas, unsigned int semilla, v
 	uniform_real_distribution<double> ydist{0.0, nextafter(height, numeric_limits<double>::max())};
 	normal_distribution<double> mdist{mass, sdm};
 	/* Creacion de asteroides */
+	#pragma omp parallel for ordered schedule(runtime)
 	for( i = 0 ; i < num_asteroides ; i++){
 		/* Rellenamos los campos del asteroide */
+		asteroides[i].vx = 0.0;
+		asteroides[i].vy = 0.0;
+		#pragma omp ordered
+		{
 		asteroides[i].x = xdist(re);
 		asteroides[i].y = ydist(re);
 		asteroides[i].mass = mdist(re);
-		asteroides[i].vx = 0.0;
-		asteroides[i].vy = 0.0;
+		}
+		
 	}
 	/* Creacion de planetas*/
+	#pragma omp parallel for ordered schedule(runtime)
 	for(i = 0; i < num_planetas ; i++){
 		/* Rellenamos los ejes del planeta en funcion de su resto con 4 */	
+		#pragma omp ordered
+		{
 		switch ( i%4 ){
     		case 0:
     			planetas[i].x = 0.0;
@@ -114,6 +123,7 @@ void createAstros (int num_asteroides, int num_planetas, unsigned int semilla, v
 		}
 		/* Rellenamos su masa */
 		planetas[i].mass = mdist(re)*10;
+		}
 	}	
 }
 /* Metodo de calculo de fuerzas de asteroides sobre un asteroide */
@@ -213,11 +223,15 @@ int main(int argc, char *argv[]){
     /* Imprimimos los datos iniciales en el fichero */
     ini << fixed << setprecision(3) << num_asteroides << " " << num_iteraciones << " " << num_planetas << " " << pos_rayo << " " << semilla << endl;
     /* Imprimimos los asteroides en el fichero */
+    #pragma omp parallel for ordered schedule(runtime)
     for (unsigned i = 0 ; i < asteroides.size() ; i++){
+    	#pragma omp ordered
     	ini << fixed << setprecision(3) <<  asteroides[i].x << " " << asteroides[i].y << " " << asteroides[i].mass << endl;
     }
     /* Imprimimos los planetas en el fichero */
+    #pragma omp parallel for ordered schedule(runtime)
     for (int i = 0; i<num_planetas ; i++) {
+    	#pragma omp ordered
     	ini << fixed << setprecision(3) << planetas[i].x << " " << planetas[i].y << " " << planetas[i].mass << " " << endl;
 	}
 	/* Imprimimos el rayo en el fichero */
@@ -229,12 +243,14 @@ int main(int argc, char *argv[]){
 			break;
 		}
 		/* Calculamos el resultado de la iteracion */
+		#pragma omp parallel for schedule(runtime)
 		for(unsigned i = 0; i < asteroides.size() ; i++){
 			/* Llamamos a los metodos que calculan fuerzas */
 			calcAstros(planetas, num_planetas, asteroides, i, fuerzax, fuerzay);
-			}
-			for(unsigned i=0;i<asteroides.size(); i++){
-			/* Sumamos las fuerzas para un asteroide */
+		}
+		#pragma omp parallel for schedule(runtime)
+		for(unsigned i=0;i<asteroides.size(); i++){	
+			/* Sumamos las fuerzas para un asteroide */		
 			 double acx =accumulate(fuerzax.begin()+((asteroides.size()+num_planetas)*i),fuerzax.begin()+((asteroides.size()+num_planetas)*(i+1)-1), 0.0);
 			 double acy =accumulate(fuerzay.begin()+((asteroides.size()+num_planetas)*i),fuerzay.begin()+((asteroides.size()+num_planetas)*(i+1)-1), 0.0);
 			/* Guardamos los datos actuales del asteroide */

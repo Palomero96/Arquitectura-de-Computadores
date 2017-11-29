@@ -145,7 +145,6 @@ void calcAstros (planeta *planetas, int num_planetas, vector<asteroide> asteroid
 		alfa = atan(pendiente);
 		/* Calculo de la fuerza */
 		fuerza = (g*asteroides[actast].mass*asteroides[i].mass)/pow(distancia,2);
-		cout << fuerza << " ";
 		/* Comprobamos que la fuerza no sea superior a la permitida */
 		if(fuerza > 200.0){
 			fuerza = 200.0;
@@ -156,10 +155,10 @@ void calcAstros (planeta *planetas, int num_planetas, vector<asteroide> asteroid
 
 		}
 		/* Calculamos las componentes de la fuerza y las añadimos al sumatorio de fuerzas */
-		fuerzax[i+actast*(asteroides.size()+num_planetas)]=fuerza*cos(alfa);
-		fuerzay[i+actast*(asteroides.size()+num_planetas)]=fuerza*sin(alfa);
-		fuerzax[actast+i*(asteroides.size()+num_planetas)]=fuerzax[i+actast*(asteroides.size()+num_planetas)]*-1;
-		fuerzay[actast+i*(asteroides.size()+num_planetas)]=fuerzay[i+actast*(asteroides.size()+num_planetas)]*-1;
+		fuerzax[(i%(asteroides.size()+num_planetas))+actast*(asteroides.size()+num_planetas)]=fuerza*cos(alfa);
+		fuerzay[(i%(asteroides.size()+num_planetas))+actast*(asteroides.size()+num_planetas)]=fuerza*sin(alfa);
+		fuerzax[(actast%(asteroides.size()+num_planetas))+i*(asteroides.size()+num_planetas)]=fuerzax[i+actast*(asteroides.size()+num_planetas)]*-1;
+		fuerzay[(actast%(asteroides.size()+num_planetas))+i*(asteroides.size()+num_planetas)]=fuerzay[i+actast*(asteroides.size()+num_planetas)]*-1;
 		fuerza = 0.0;
 	}
 	/* Para cada planeta del espacio */
@@ -183,8 +182,8 @@ void calcAstros (planeta *planetas, int num_planetas, vector<asteroide> asteroid
 			fuerza = 200.0;
 		}
 		/* Calculamos las componentes de la fuerza y las añadimos al sumatorio de fuerzas */
-		fuerzax[actast*(asteroides.size()+num_planetas)+asteroides.size()+i]=fuerza*cos(alfa);
-		fuerzay[actast*(asteroides.size()+num_planetas)+asteroides.size()+i]=fuerza*sin(alfa);
+		fuerzax[actast*(asteroides.size()+num_planetas)+(asteroides.size()+i%(asteroides.size()+num_planetas))]=fuerza*cos(alfa);
+		fuerzay[actast*(asteroides.size()+num_planetas)+(asteroides.size()+i%(asteroides.size()+num_planetas))]=fuerza*sin(alfa);
 		fuerza = 0.0;
 	}
 }
@@ -235,10 +234,14 @@ int main(int argc, char *argv[]){
 			calcAstros(planetas, num_planetas, asteroides, i, fuerzax, fuerzay);
 			}
 			for(unsigned i=0;i<asteroides.size(); i++){
-			/* Guardamos los datos actuales del asteroide */
-			 double acx =accumulate(fuerzax.begin()+(asteroides.size()+num_planetas)*i,fuerzax.begin()+(asteroides.size()+num_planetas)*i+(asteroides.size()+num_planetas-1), 0.0);
-			 double acy =accumulate(fuerzay.begin()+(asteroides.size()+num_planetas)*i,fuerzay.begin()+(asteroides.size()+num_planetas)*i+(asteroides.size()+num_planetas-1), 0.0);
+				for(unsigned j=((asteroides.size()+num_planetas)*i);j<((asteroides.size()+num_planetas)*(i+1)); j++){
+				cout << fuerzax[j] << " " << fuerzay[j] << endl;
+			}
 			
+			 double acx =accumulate(fuerzax.begin()+((asteroides.size()+num_planetas)*i),fuerzax.begin()+((asteroides.size()+num_planetas)*(i+1)), 0.0);
+			 cout << acx << " " << endl;
+			 double acy =accumulate(fuerzay.begin()+((asteroides.size()+num_planetas)*i),fuerzay.begin()+((asteroides.size()+num_planetas)*(i+1)), 0.0);
+			/* Guardamos los datos actuales del asteroide */
 			asteroides[i].vx = asteroides[i].vx + (acx/asteroides[i].mass) * 0.1;
 			asteroides[i].vy = asteroides[i].vy + (acy/asteroides[i].mass) * 0.1;
 			asteroides[i].x = asteroides[i].x + asteroides[i].vx * 0.1;
@@ -273,8 +276,8 @@ int main(int argc, char *argv[]){
 							fuerzay.erase(fuerzay.begin()+k);
 						}
 					} else{
-						fuerzax.erase(fuerzax.begin()+((asteroides.size()+num_planetas)*j+i));
-						fuerzay.erase(fuerzay.begin()+((asteroides.size()+num_planetas)*j+i));
+						fuerzax.erase(fuerzax.begin()+((asteroides.size()+num_planetas)*j+(i%(asteroides.size()+num_planetas))));
+						fuerzay.erase(fuerzay.begin()+((asteroides.size()+num_planetas)*j+(i%(asteroides.size()+num_planetas))));
 					}
 				}
 				i--;

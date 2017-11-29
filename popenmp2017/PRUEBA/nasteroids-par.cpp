@@ -305,7 +305,9 @@ int main(int argc, char *argv[]){
 	}
 	/* Imprimimos resultados finales en fichero */
 	ofstream out("out.txt");
+	#pragma omp parallel for ordered schedule(runtime)
 	for (unsigned i = 0 ; i < asteroides.size() ; i++) {
+		#pragma omp ordered
 		out << fixed << setprecision(3) << asteroides[i].x << " " << asteroides[i].y << " " << asteroides[i].vx << " " << asteroides[i].vy << " " << asteroides[i].mass << endl;
 	}
 	return 0;

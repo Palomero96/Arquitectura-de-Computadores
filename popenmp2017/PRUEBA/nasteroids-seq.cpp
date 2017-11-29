@@ -238,9 +238,9 @@ int main(int argc, char *argv[]){
 				cout << fuerzax[j] << " " << fuerzay[j] << endl;
 			}
 			
-			 double acx =accumulate(fuerzax.begin()+((asteroides.size()+num_planetas)*i),fuerzax.begin()+((asteroides.size()+num_planetas)*(i+1)), 0.0);
+			 double acx =accumulate(fuerzax.begin()+((asteroides.size()+num_planetas)*i),fuerzax.begin()+((asteroides.size()+num_planetas)*(i+1)-1), 0.0);
 			 cout << acx << " " << endl;
-			 double acy =accumulate(fuerzay.begin()+((asteroides.size()+num_planetas)*i),fuerzay.begin()+((asteroides.size()+num_planetas)*(i+1)), 0.0);
+			 double acy =accumulate(fuerzay.begin()+((asteroides.size()+num_planetas)*i),fuerzay.begin()+((asteroides.size()+num_planetas)*(i+1)-1), 0.0);
 			/* Guardamos los datos actuales del asteroide */
 			asteroides[i].vx = asteroides[i].vx + (acx/asteroides[i].mass) * 0.1;
 			asteroides[i].vy = asteroides[i].vy + (acy/asteroides[i].mass) * 0.1;
@@ -276,8 +276,8 @@ int main(int argc, char *argv[]){
 							fuerzay.erase(fuerzay.begin()+k);
 						}
 					} else{
-						fuerzax.erase(fuerzax.begin()+((asteroides.size()+num_planetas)*j+(i%(asteroides.size()+num_planetas))));
-						fuerzay.erase(fuerzay.begin()+((asteroides.size()+num_planetas)*j+(i%(asteroides.size()+num_planetas))));
+						fuerzax.erase(fuerzax.begin()+((asteroides.size()+num_planetas)*j+i));
+						fuerzay.erase(fuerzay.begin()+((asteroides.size()+num_planetas)*j+i));
 					}
 				}
 				i--;
